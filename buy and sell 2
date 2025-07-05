@@ -1,0 +1,35 @@
+#include<bits/stdc++.h>
+long maxiprofit(int i,int buy,long *values,int n,vector<vector<long>>&dp){
+    if(i==n) return 0;
+    long profit=0;
+    if(dp[i][buy]!=-1) return dp[i][buy];
+    if(buy){
+        profit=max(-values[i]+maxiprofit(i+1,0,values,n,dp),maxiprofit(i+1,1,values,n,dp));
+    }
+    else{
+        profit=max(values[i]+maxiprofit(i+1,1,values,n,dp),maxiprofit(i+1,0,values,n,dp));
+        // profit= max(sell,notsell);
+    }
+    return dp[i][buy]=profit;
+}
+long getMaximumProfit(long *values, int n)
+{
+    //Write your code here
+    vector<vector<long>>dp(n,vector<long>(2,-1));
+    return maxiprofit(0,1,values,n,dp); 
+}
+
+very optimised approach only using 4 variables
+long getMaximumProfit(long *values, int n)
+{
+    //Write your code here
+    long buy=0,sell=0,currb,currs;
+    long total=0;
+    for(int i=n-1;i>=0;i--){
+       currs=max(values[i]+buy,sell);
+       currb=max(-values[i]+sell,buy);
+       buy=currb;
+       sell=currs;
+    }
+    return buy;
+}
