@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+    vector<vector<int>>prev(2,vector<int>(k+1,0));
+    vector<vector<int>>curr(2,vector<int>(k+1,0));
+    
+    for(int i=prices.size()-1;i>=0;i--){
+        for(int j=0;j<=1;j++){
+            for(int z=1;z<=k;z++){
+                if(j==1){
+                    curr[j][z]=max(prev[0][z]-prices[i],prev[1][z]);
+                }
+                else{
+                    curr[j][z]=max(prev[1][z-1]+prices[i],prev[0][z]);
+                }
+            }
+            prev=curr;
+        }
+    }
+    return prev[1][k];
+    }
+};
+
+optimal using single vector
+      #include <bits/stdc++.h> 
+int findtrac(int i,int tran,vector<int>&prices,int n,int k,vector<vector<int>>&dp){
+    if(i==n||tran==2*k) return 0;
+    if(dp[i][tran]!=-1) return dp[i][tran];
+    if(tran%2==0){
+        return dp[i][tran]=max(-prices[i]+findtrac(i+1,tran+1,prices,n,k,dp),findtrac(i+1,tran,prices,n,k,dp));
+    }
+    else{
+        return dp[i][tran]=max(prices[i]+findtrac(i+1,tran+1,prices,n,k,dp),findtrac(i+1,tran,prices,n,k,dp));
+    }
+}
+int maximumProfit(vector<int> &prices, int n, int k)
+{
+    // Write your code here.
+    vector<vector<int>>dp(n,vector<int>(2*k,-1));
+    return findtrac(0,0,prices,n,k,dp);
+}
